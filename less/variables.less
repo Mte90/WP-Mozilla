@@ -16,7 +16,7 @@
 
 @brand-primary:         #2A88C8;
 @brand-success:         #5cb85c;
-@brand-info:            #5bc0de;
+@brand-info:            #2988C8;
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
@@ -31,7 +31,7 @@
 @text-color:            @gray-dark;
 
 //** Global textual link color.
-@link-color:            #C4372D;
+@link-color:            #0096DD;
 //** Link hover color set via `darken()` function.
 @link-hover-color:      darken(@link-color, 15%);
 //** Link hover decoration.
@@ -149,7 +149,7 @@
 @btn-default-border:             #ccc;
 
 @btn-primary-color:              #fff;
-@btn-primary-bg:                 @brand-primary;
+@btn-primary-bg:                 #C4372D;
 @btn-primary-border:             transparent;
 
 @btn-success-color:              #fff;
@@ -171,7 +171,7 @@
 @btn-link-disabled-color:        @gray-light;
 
 // Allows for customizing button radius independently from global border radius
-@btn-border-radius-base:         @border-radius-base;
+@btn-border-radius-base:         0;
 @btn-border-radius-large:        @border-radius-large;
 @btn-border-radius-small:        @border-radius-small;
 
@@ -500,16 +500,16 @@
 @state-success-bg:               #dff0d8;
 @state-success-border:           darken(spin(@state-success-bg, -10), 5%);
 
-@state-info-text:                #31708f;
-@state-info-bg:                  #d9edf7;
+@state-info-text:                #fff;
+@state-info-bg:                  #2988C8;
 @state-info-border:              darken(spin(@state-info-bg, -10), 7%);
 
-@state-warning-text:             #8a6d3b;
-@state-warning-bg:               #fcf8e3;
-@state-warning-border:           darken(spin(@state-warning-bg, -10), 5%);
+@state-warning-text:             #fff;
+@state-warning-bg:               #DE510E;
+@state-warning-border:           darken(spin(@state-warning-bg, -10), 2%);
 
-@state-danger-text:              #a94442;
-@state-danger-bg:                #f2dede;
+@state-danger-text:              #fff;
+@state-danger-bg:                #C4372D;
 @state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
 
 
@@ -706,7 +706,7 @@
 @panel-body-padding:          15px;
 @panel-heading-padding:       10px 15px;
 @panel-footer-padding:        @panel-heading-padding;
-@panel-border-radius:         @border-radius-base;
+@panel-border-radius:         0;
 
 //** Border color for elements within panels
 @panel-inner-border:          #ddd;
