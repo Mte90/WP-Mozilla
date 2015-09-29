@@ -4574,7 +4574,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   display: inline-block;
 }
 .breadcrumb > li + li:before {
-  content: "▶ \00a0";
+  content: "▶\00a0";
   padding: 0 5px;
   color: #484848;
 }
@@ -4688,7 +4688,6 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pager li > span {
   display: inline-block;
   padding: 5px 14px;
-  background-color: #c4372d;
   color: #777;
 }
 .pager li > a:hover,
