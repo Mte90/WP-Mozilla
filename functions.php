@@ -158,7 +158,7 @@ function bootstrapwp_breadcrumbs() {
 		echo '<div class="well well-light"><ul class="breadcrumb">';
 		global $post;
 		$homeLink = home_url();
-		echo '<li><i class="fa fa-caret-square-o-right"></i>&nbsp;<a href="' . $homeLink . '">' . $home . '</a></li> ';
+		echo '<li><i class="fa fa-home"></i>&nbsp;<a href="' . $homeLink . '">' . $home . '</a></li> ';
 		if ( is_category() ) {
 			global $wp_query;
 			$cat_obj = $wp_query->get_queried_object();

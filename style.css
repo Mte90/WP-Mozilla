@@ -18,7 +18,7 @@ h2 a, h2 a:hover, h2 {
 	color: #C4372D;
 	font-weight: bold;
 }
-#main-header {
+#main-header, .footer {
 	background: #C4372D;
 	border-top: 1px solid #FFF;
 	color: #FFF;
@@ -77,6 +77,11 @@ h2 a, h2 a:hover, h2 {
 }
 .blog .row,.home .row {
 	margin-top:20px;
+}
+.footer p {
+	color:#fff;
+	padding-top:20px;
+	padding-bottom:10px;
 }
 /*Wordpress editor styles start*/
 
