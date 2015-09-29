@@ -11,6 +11,13 @@ body {
 	color: #484848;
 	line-height: 23px;
 }
+h2 {
+	margin-top:10px;
+}
+h2 a, h2 a:hover, h2 {
+	color: #C4372D;
+	font-weight: bold;
+}
 #main-header {
 	background: #C4372D;
 	border-top: 1px solid #FFF;
@@ -19,11 +26,16 @@ body {
 #main-header .container {
 	padding-left:0;
 }
-.input-group {
-	width:100%;
+#searchsubmit {
+	position: absolute;
 }
-.form-inline .input-group .input-group-btn {
-	width:1%;
+#searchform .form-group, .input-group, .form-inline .input-group .form-control {
+	width:95%;
+}
+.form-inline .input-group .form-control {
+	margin-left:38px;
+	border:none;
+	box-shadow:none;
 }
 .navbar-brand span.small {
     margin: 0px;
@@ -62,6 +74,9 @@ body {
 #tabzilla {
 	cursor:pointer;
 	margin-top: -1px;
+}
+.blog .row,.home .row {
+	margin-top:20px;
 }
 /*Wordpress editor styles start*/
 

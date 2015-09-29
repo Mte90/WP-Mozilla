@@ -345,8 +345,6 @@ function bootstrapwp_comment( $comment, $args, $depth ) {
 	    $defaults = array(
 		'range' => 4,
 		'custom_query' => FALSE,
-		'previous_string' => __( '<i class="glyphicon glyphicon-chevron-left"></i>', 'text-domain' ),
-		'next_string' => __( '<i class="glyphicon glyphicon-chevron-right"></i>', 'text-domain' ),
 		'before_output' => '<div class="post-nav"><ul class="pager">',
 		'after_output' => '</ul></div>'
 	    );
@@ -392,7 +390,7 @@ function bootstrapwp_comment( $comment, $args, $depth ) {
 	    if ( $firstpage && (1 != $page) )
 		    $echo .= '<li class="previous"><a href="' . $firstpage . '">' . __( 'First', 'text-domain' ) . '</a></li>';
 	    if ( $previous && (1 != $page) )
-		    $echo .= '<li><a href="' . $previous . '" title="' . __( 'previous', 'text-domain' ) . '">' . $args[ 'previous_string' ] . '</a></li>';
+		    $echo .= '<li><a href="' . $previous . '" title="' . __( 'previous', 'text-domain' ) . '"><</a></li>';
 
 	    if ( !empty( $min ) && !empty( $max ) ) {
 		    for ( $i = $min; $i <= $max; $i++ ) {
@@ -407,7 +405,7 @@ function bootstrapwp_comment( $comment, $args, $depth ) {
 	    $next = intval( $page ) + 1;
 	    $next = esc_attr( get_pagenum_link( $next ) );
 	    if ( $next && ($count != $page) )
-		    $echo .= '<li><a href="' . $next . '" title="' . __( 'next', 'text-domain' ) . '">' . $args[ 'next_string' ] . '</a></li>';
+		    $echo .= '<li><a href="' . $next . '" title="' . __( 'next', 'text-domain' ) . '">></a></li>';
 
 	    $lastpage = esc_attr( get_pagenum_link( $count ) );
 	    if ( $lastpage ) {
