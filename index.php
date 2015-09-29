@@ -4,10 +4,10 @@
 	<?php if ( have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 
-			<h2 class="alert alert-success">
+			<h2>
 			    <?php
 			    if ( is_archive() ) {
-				    echo '<a href="'.get_permalink().'">'.get_the_title().'</a>';
+				    echo '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
 			    } else {
 				    the_title();
 			    }
@@ -15,10 +15,15 @@
 			</h2>
 
 			<?php the_content(); ?>
+			<?php
+			if ( is_archive() ) {
+				wp_bootstrap_pagination();
+			}
+			?>
 
-	<?php endwhile; ?>
+		<?php endwhile; ?>
 	<?php else : ?>
-		<div class="alert alert-info">
+		<div>
 		    <strong>No content in this loop</strong>
 		</div>
 	<?php endif; ?>

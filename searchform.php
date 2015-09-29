@@ -4,7 +4,7 @@
 	<i class="fa fa-search"></i>
 	</button>
 	<div class="form-group">
-	    <input type="search" class="form-control input-lg" id="s" name="s" required />
+	    <input type="search" class="form-control" id="s" name="s" required />
 	</div>
     </div>
 </form>
