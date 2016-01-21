@@ -71,10 +71,6 @@ h2 a, h2 a:hover, h2 {
 .main-menu a:hover {
 	text-decoration: underline !important;
 }
-#tabzilla {
-	cursor:pointer;
-	margin-top: -1px;
-}
 .blog .row,.home .row {
 	margin-top:20px;
 }

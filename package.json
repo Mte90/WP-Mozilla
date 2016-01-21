@@ -27,7 +27,8 @@
     "grunt-contrib-cssmin": "~0.12.3",
     "grunt-contrib-less": "~1.0.1",
     "grunt-contrib-watch": "~0.6.1",
-	"load-grunt-tasks": "~3.2.0"
+    "load-grunt-tasks": "~3.2.0",
+    "mozilla-tabzilla": ">=0.5.1"
   },
   "engines": {
     "node": ">=0.10.1"
