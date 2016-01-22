@@ -1,245 +1,207 @@
 <?php
-//Add thumbnail support
-add_theme_support( 'post-thumbnails' );
+/**
+ * Hursty Theme functions and definitions.
+ *
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package Hursty_Theme
+ */
+if ( !function_exists( 'hursty_wp_setup' ) ) :
 
-//Add menu support and register main menu
-if ( function_exists( 'register_nav_menus' ) ) {
-	register_nav_menus(
-		array(
-		    'main_menu' => 'Main Menu'
-		)
-	);
-}
+	/**
+	 * Sets up theme defaults and registers support for various WordPress features.
+	 *
+	 * Note that this function is hooked into the after_setup_theme hook, which
+	 * runs before the init hook. The init hook is too late for some features, such
+	 * as indicating support for post thumbnails.
+	 */
+	function hursty_wp_setup() {
+		/*
+		 * Make theme available for translation.
+		 * Translations can be filed in the /languages/ directory.
+		 * If you're building a theme based on Hursty Theme, use a find and replace
+		 * to change 'hursty-wp' to the name of your theme in all the template files.
+		 */
+		load_theme_textdomain( 'hursty-wp', get_template_directory() . '/languages' );
 
-// filter the Gravity Forms button type
-add_filter( "gform_submit_button", "form_submit_button", 10, 2 );
+		// Add default posts and comments RSS feed links to head.
+		add_theme_support( 'automatic-feed-links' );
 
-function form_submit_button( $button, $form ) {
-	return "<button class='button btn' id='gform_submit_button_{$form[ "id" ]}'><span>{$form[ 'button' ][ 'text' ]}</span></button>";
-}
+		/*
+		 * Let WordPress manage the document title.
+		 * By adding theme support, we declare that this theme does not use a
+		 * hard-coded <title> tag in the document head, and expect WordPress to
+		 * provide it for us.
+		 */
+		add_theme_support( 'title-tag' );
 
-// Register sidebar
-if ( function_exists( 'register_sidebar' ) ) {
-	register_sidebar( array(
-	    'id' => 'sidebar-1',
-	    'name' => 'Sidebar',
-	    'class' => '',
-	    'before_widget' => '<article id="%1$s" class="panel panel-info widget %2$s">' . "\n",
-	    'after_widget' => '</section></article>' . "\n",
-	    'before_title' => '<h4 class="panel-heading">' . "\n",
-	    'after_title' => '</h4><section class="panel-content">' . "\n",
-	) );
-}
+		/*
+		 * Enable support for Post Thumbnails on posts and pages.
+		 *
+		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+		 */
+		add_theme_support( 'post-thumbnails' );
 
-// Bootstrap_Walker_Nav_Menu setup
+		// This theme uses wp_nav_menu() in one location.
+		register_nav_menus( array(
+		    'primary' => esc_html__( 'Primary', 'hursty-wp' ),
+		) );
 
-add_action( 'after_setup_theme', 'bootstrap_setup' );
+		// Footer Menu
+		register_nav_menus( array(
+		    'footer-menu' => esc_html__( 'Footer Menu', 'hursty-wp' ),
+		) );
 
-if ( !function_exists( 'bootstrap_setup' ) ):
+		/*
+		 * Switch default core markup for search form, comment form, and comments
+		 * to output valid HTML5.
+		 */
+		add_theme_support( 'html5', array(
+		    'search-form',
+		    'comment-form',
+		    'comment-list',
+		    'gallery',
+		    'caption',
+		) );
 
-	function bootstrap_setup() {
+		/*
+		 * Enable support for Post Formats.
+		 * See https://developer.wordpress.org/themes/functionality/post-formats/
+		 */
+		add_theme_support( 'post-formats', array(
+		    'aside',
+		    'image',
+		    'video',
+		    'quote',
+		    'link',
+		) );
 
-		add_action( 'init', 'register_menu' );
-
-		function register_menu() {
-			register_nav_menu( 'top-bar', 'Bootstrap Top Menu' );
-		}
-
-		class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu {
-
-			function start_lvl( &$output, $depth = 0, $args = array() ) {
-
-				$indent = str_repeat( "\t", $depth );
-				$output .= "\n$indent<ul class=\"dropdown-menu\">\n";
-			}
-
-			function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-
-				$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-
-				$li_attributes = $class_names = $value = $item_output = '';
-
-				$classes = empty( $item->classes ) ? array() : ( array ) $item->classes;
-				$classes[] = !empty( $args->has_children ) ? 'dropdown' : '';
-				$classes[] = ($item->current || $item->current_item_ancestor) ? 'active' : '';
-				$classes[] = 'menu-item-' . $item->ID;
-				if ( isset( $item->url ) ) {
-					$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
-					$class_names = ' class="' . esc_attr( $class_names ) . '"';
-
-					$id = apply_filters( 'nav_menu_item_id', 'menu-item-' . $item->ID, $item, $args );
-					$id = strlen( $id ) ? ' id="' . esc_attr( $id ) . '"' : '';
-
-					$output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
-
-					$attributes = !empty( $item->attr_title ) ? ' title="' . esc_attr( $item->attr_title ) . '"' : '';
-					$attributes .=!empty( $item->target ) ? ' target="' . esc_attr( $item->target ) . '"' : '';
-					$attributes .=!empty( $item->xfn ) ? ' rel="' . esc_attr( $item->xfn ) . '"' : '';
-					$attributes .=!empty( $item->url ) ? ' href="' . esc_attr( $item->url ) . '"' : '';
-					$attributes .=!empty( $args->has_children ) ? ' class="dropdown-toggle" data-toggle="dropdown"' : '';
-
-					$item_output = !empty( $args->before ) ? $args->before : '';
-					$item_output .= '<a' . $attributes . '>';
-					$item_output .=!empty( $args->link_before ) ? $args->link_before : '';
-					$item_output .= apply_filters( 'the_title', $item->title, $item->ID );
-					$item_output .=!empty( $args->link_after ) ? $args->link_adter : '';
-					$item_output .=!empty( $args->has_children ) ? ' <b class="caret"></b></a>' : '</a>';
-					$item_output .=!empty( $args->after );
-				}
-				$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
-			}
-
-			function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
-
-				if ( !$element ) {
-					return;
-				}
-
-				$id_field = $this->db_fields[ 'id' ];
-
-				//display this element
-				if ( is_array( $args[ 0 ] ) ) {
-					$args[ 0 ][ 'has_children' ] = !empty( $children_elements[ $element->$id_field ] );
-				} else if ( is_object( $args[ 0 ] ) ) {
-					$args[ 0 ]->has_children = !empty( $children_elements[ $element->$id_field ] );
-				}
-				$cb_args = array_merge( array( &$output, $element, $depth ), $args );
-				call_user_func_array( array( &$this, 'start_el' ), $cb_args );
-
-				$id = $element->$id_field;
-
-				// descend only when the depth is right and there are childrens for this element
-				if ( ($max_depth == 0 || $max_depth > $depth + 1 ) && isset( $children_elements[ $id ] ) ) {
-
-					foreach ( $children_elements[ $id ] as $child ) {
-
-						if ( !isset( $newlevel ) ) {
-							$newlevel = true;
-							//start the child delimiter
-							$cb_args = array_merge( array( &$output, $depth ), $args );
-							call_user_func_array( array( &$this, 'start_lvl' ), $cb_args );
-						}
-						$this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
-					}
-					unset( $children_elements[ $id ] );
-				}
-
-				if ( isset( $newlevel ) && $newlevel ) {
-					//end the child delimiter
-					$cb_args = array_merge( array( &$output, $depth ), $args );
-					call_user_func_array( array( &$this, 'end_lvl' ), $cb_args );
-				}
-
-				//end this element
-				$cb_args = array_merge( array( &$output, $element, $depth ), $args );
-				call_user_func_array( array( &$this, 'end_el' ), $cb_args );
-			}
-
-			function end_el( &$output, $item, $depth = 0, $args = array() ) {
-
-				if ( isset( $item->url ) ) {
-					$output .= "</li>\n";
-				}
-			}
-
-		}
-
+		// Set up the WordPress core custom background feature.
+		add_theme_support( 'custom-background', apply_filters( 'hursty_wp_custom_background_args', array(
+		    'default-color' => 'ffffff',
+		    'default-image' => '',
+		) ) );
 	}
 
 endif;
+add_action( 'after_setup_theme', 'hursty_wp_setup' );
 
-//From https://github.com/rachelbaker/bootstrapwp-Twitter-Bootstrap-for-WordPress
-function bootstrapwp_breadcrumbs() {
-	$home = __( 'Home' ); // text for the 'Home' link
-	$before = '<li class="active">'; // tag before the current crumb
-	$sep = '';
-	$after = '</li>'; // tag after the current crumb
-	if ( !is_home() && !is_front_page() || is_paged() ) {
-		echo '<div class="well well-light"><ul class="breadcrumb">';
-		global $post;
-		$homeLink = home_url();
-		echo '<li><i class="fa fa-home"></i>&nbsp;<a href="' . $homeLink . '">' . $home . '</a></li> ';
-		if ( is_category() ) {
-			global $wp_query;
-			$cat_obj = $wp_query->get_queried_object();
-			$thisCat = $cat_obj->term_id;
-			$thisCat = get_category( $thisCat );
-			$parentCat = get_category( $thisCat->parent );
-			if ( $thisCat->parent != 0 ) {
-				echo get_category_parents( $parentCat, true, $sep );
-			}
-			echo $before . __( 'Archive by category' ) . ' "' . single_cat_title( '', false ) . '"' . $after;
-		} elseif ( is_day() ) {
-			echo '<li><a href="' . get_year_link( get_the_time( 'Y' ) ) . '">' . get_the_time(
-				'Y'
-			) . '</a></li> ';
-			echo '<li><a href="' . get_month_link( get_the_time( 'Y' ), get_the_time( 'm' ) ) . '">' . get_the_time(
-				'F'
-			) . '</a></li> ';
-			echo $before . get_the_time( 'd' ) . $after;
-		} elseif ( is_month() ) {
-			echo '<li><a href="' . get_year_link( get_the_time( 'Y' ) ) . '">' . get_the_time(
-				'Y'
-			) . '</a></li> ';
-			echo $before . get_the_time( 'F' ) . $after;
-		} elseif ( is_year() ) {
-			echo $before . get_the_time( 'Y' ) . $after;
-		} elseif ( is_single() && !is_attachment() ) {
-			if ( get_post_type() != 'post' ) {
-				$post_type = get_post_type_object( get_post_type() );
-				$slug = $post_type->rewrite;
-				echo '<li><a href="' . $homeLink . '/' . $slug[ 'slug' ] . '/">' . $post_type->labels->singular_name . '</a></li> ';
-				echo $before . get_the_title() . $after;
-			} else {
-				$cat = get_the_category();
-				$cat = $cat[ 0 ];
-				echo '<li>' . get_category_parents( $cat, true, $sep ) . '</li>';
-				echo $before . get_the_title() . $after;
-			}
-		} elseif ( !is_single() && !is_page() && get_post_type() != 'post' && !is_404() ) {
-			$post_type = get_post_type_object( get_post_type() );
-			echo $before . $post_type->labels->singular_name . $after;
-		} elseif ( is_attachment() ) {
-			$parent = get_post( $post->post_parent );
-			$cat = get_the_category( $parent->ID );
-			$cat = $cat[ 0 ];
-			echo get_category_parents( $cat, true, $sep );
-			echo '<li><a href="' . get_permalink(
-				$parent
-			) . '">' . $parent->post_title . '</a></li> ';
-			echo $before . get_the_title() . $after;
-		} elseif ( is_page() && !$post->post_parent ) {
-			echo $before . get_the_title() . $after;
-		} elseif ( is_page() && $post->post_parent ) {
-			$parent_id = $post->post_parent;
-			$breadcrumbs = array();
-			while ( $parent_id ) {
-				$page = get_page( $parent_id );
-				$breadcrumbs[] = '<li><a href="' . get_permalink( $page->ID ) . '">' . get_the_title(
-						$page->ID
-					) . '</a>' . $sep . '</li>';
-				$parent_id = $page->post_parent;
-			}
-			$breadcrumbs = array_reverse( $breadcrumbs );
-			foreach ( $breadcrumbs as $crumb ) {
-				echo $crumb;
-			}
-			echo $before . get_the_title() . $after;
-		} elseif ( is_search() ) {
-			echo $before . __( 'Search results for' ) . ' "' . get_search_query() . '"' . $after;
-		} elseif ( is_tag() ) {
-			echo $before . __( 'Posts tagged' ) . ' "' . single_tag_title( '', false ) . '"' . $after;
-		} elseif ( is_author() ) {
-			global $author;
-			$userdata = get_userdata( $author );
-			echo $before . __( 'Articles posted by' ) . ' ' . $userdata->display_name . $after;
-		} elseif ( is_404() ) {
-			echo $before . __( 'Error 404' ) . $after;
-		}
-		echo '</ul></div>';
+/**
+ * Set the content width in pixels, based on the theme's design and stylesheet.
+ *
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @global int $content_width
+ */
+function hursty_wp_content_width() {
+	$GLOBALS[ 'content_width' ] = apply_filters( 'hursty_wp_content_width', 640 );
+}
+
+add_action( 'after_setup_theme', 'hursty_wp_content_width', 0 );
+
+/**
+ * Register widget area.
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
+ */
+function hursty_wp_widgets_init() {
+	register_sidebar( array(
+	    'name' => esc_html__( 'Sidebar', 'hursty-wp' ),
+	    'id' => 'sidebar-1',
+	    'description' => '',
+	    'before_widget' => '<section id="%1$s" class="widget %2$s">'."\n",
+	    'after_widget' => '</section>'."\n",
+	    'before_title' => '<h4 class="widget-title">',
+	    'after_title' => '</h4>'."\n",
+	) );
+}
+
+add_action( 'widgets_init', 'hursty_wp_widgets_init' );
+
+/**
+ * Enqueue scripts and styles.
+ */
+function hursty_wp_scripts() {
+
+	// Bootstrap Styles
+	wp_enqueue_style( 'bootstrap-styles', get_template_directory_uri() . '/css/bootstrap.css', array(), '3.3.6', 'all' );
+
+	wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/css/font-awesome.min.css', array(), '4.5.0', 'all' );
+
+	wp_enqueue_style( 'hursty-wp-style', get_stylesheet_uri() );
+
+	// Bootstrap JS
+	wp_enqueue_script( 'bootstrap-js', get_template_directory_uri() . '/js/bootstrap.min.js', array( 'jquery' ), '3.3.6', 'all' );
+
+	wp_enqueue_script( 'hursty-wp-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
+
+	wp_enqueue_script( 'hursty-wp-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
+
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
 	}
 }
 
+add_action( 'wp_enqueue_scripts', 'hursty_wp_scripts' );
+
+
+/**
+ * Add Respond.js for IE
+ */
+if ( !function_exists( 'ie_scripts' ) ) {
+
+	function ie_scripts() {
+		echo '<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->';
+		echo '<!--[if lt IE 9]>';
+		echo '<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>';
+		echo '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>';
+		echo '<![endif]-->';
+	}
+
+	add_action( 'wp_head', 'ie_scripts' );
+} // end if
+
+/**
+ * Implement the Custom Header feature.
+ */
+require get_template_directory() . '/inc/custom-header.php';
+
+/**
+ * Custom template tags for this theme.
+ */
+require get_template_directory() . '/inc/template-tags.php';
+
+/**
+ * Custom functions that act independently of the theme templates.
+ */
+require get_template_directory() . '/inc/extras.php';
+
+/**
+ * Customizer additions.
+ */
+require get_template_directory() . '/inc/customizer.php';
+
+/**
+ * Load Jetpack compatibility file.
+ */
+require get_template_directory() . '/inc/jetpack.php';
+
+/**
+ * Load Bootstrap Nav Walker
+ */
+require get_template_directory() . '/inc/bootstrap-walker.php';
+
+//WP-Mozilla custom code
+if ( !function_exists( '_wp_render_title_tag' ) ) {
+
+	function theme_slug_render_title() {
+		?>
+		<title><?php wp_title( '-', true, 'right' ); ?></title>
+		<?php
+	}
+
+	add_action( 'wp_head', 'theme_slug_render_title' );
+}
 add_filter( 'comment_form_default_fields', 'bootstrap3_comment_form_fields' );
 
 function bootstrap3_comment_form_fields( $fields ) {
@@ -268,150 +230,13 @@ function bootstrap3_comment_form( $args ) {
                 <label for="comment">' . _x( 'Comment', 'noun' ) . '</label> 
                 <textarea class="form-control" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
             </div>';
-	$args[ 'class_submit' ] = 'btn btn-primary'; // since WP 4.1
+	$args[ 'class_submit' ] = 'btn btn-default'; // since WP 4.1
 
 	return $args;
 }
 
-function bootstrapwp_comment( $comment, $args, $depth ) {
-	$GLOBALS[ 'comment' ] = $comment;
-	switch ( $comment->comment_type ) :
-		case 'pingback' :
-		case 'trackback' :
-			?>
-			<li class="comment media" id="comment-<?php comment_ID(); ?>">
-			    <div class="media-body">
-				<p>
-				    <?php _e( 'Pingback:' ); ?> <?php comment_author_link(); ?>
-				</p>
-			    </div>
-			    <?php
-			    break;
-		    default :
-			    // Proceed with normal comments.
-			    global $post;
-			    ?>
+add_action( 'comment_form', 'bootstrap3_comment_button' );
 
-			<li class="comment media" id="li-comment-<?php comment_ID(); ?>">
-			    <a href="<?php echo $comment->comment_author_url; ?>" class="pull-left">
-				<?php echo get_avatar( $comment, 64 ); ?>
-			    </a>
-			    <div class="media-body">
-				<h4 class="media-heading comment-author vcard">
-				    <?php
-				    printf( '<cite class="fn">%1$s %2$s</cite>', get_comment_author_link(),
-					    // If current post author is also comment author, make it known visually.
-					    ($comment->user_id === $post->post_author) ? '<span class="label"> ' . __(
-							    'Post author'
-						    ) . '</span> ' : ''  );
-				    ?>
-				</h4>
-
-				<?php if ( '0' == $comment->comment_approved ) : ?>
-					<p class="comment-awaiting-moderation"><?php
-					    _e(
-						    'Your comment is awaiting moderation.'
-					    );
-					    ?></p>
-				<?php endif; ?>
-
-				<?php comment_text(); ?>
-				<p class="meta">
-				    <?php
-				    printf( '<a href="%1$s"><time datetime="%2$s">%3$s</time></a>', esc_url( get_comment_link( $comment->comment_ID ) ), get_comment_time( 'c' ), sprintf(
-						    __( '%1$s at %2$s' ), get_comment_date(), get_comment_time()
-					    )
-				    );
-				    ?>
-				</p>
-				<p class="reply">
-				    <?php
-				    comment_reply_link( array_merge( $args, array(
-					'reply_text' => __( 'Reply <span>&darr;</span>' ),
-					'depth' => $depth,
-					'max_depth' => $args[ 'max_depth' ]
-						    )
-				    ) );
-				    ?>
-				</p>
-			    </div>
-			    <?php
-			    break;
-	    endswitch;
-    }
-
-    function wp_bootstrap_pagination( $args = array() ) {
-
-	    $defaults = array(
-		'range' => 4,
-		'custom_query' => FALSE,
-		'before_output' => '<div class="post-nav"><ul class="pager">',
-		'after_output' => '</ul></div>'
-	    );
-
-	    $args = wp_parse_args(
-		    $args, apply_filters( 'wp_bootstrap_pagination_defaults', $defaults )
-	    );
-
-	    $args[ 'range' ] = ( int ) $args[ 'range' ] - 1;
-	    if ( !$args[ 'custom_query' ] )
-		    $args[ 'custom_query' ] = @$GLOBALS[ 'wp_query' ];
-	    $count = ( int ) $args[ 'custom_query' ]->max_num_pages;
-	    $page = intval( get_query_var( 'paged' ) );
-	    $ceil = ceil( $args[ 'range' ] / 2 );
-
-	    if ( $count <= 1 )
-		    return FALSE;
-
-	    if ( !$page )
-		    $page = 1;
-
-	    if ( $count > $args[ 'range' ] ) {
-		    if ( $page <= $args[ 'range' ] ) {
-			    $min = 1;
-			    $max = $args[ 'range' ] + 1;
-		    } elseif ( $page >= ($count - $ceil) ) {
-			    $min = $count - $args[ 'range' ];
-			    $max = $count;
-		    } elseif ( $page >= $args[ 'range' ] && $page < ($count - $ceil) ) {
-			    $min = $page - $ceil;
-			    $max = $page + $ceil;
-		    }
-	    } else {
-		    $min = 1;
-		    $max = $count;
-	    }
-
-	    $echo = '';
-	    $previous = intval( $page ) - 1;
-	    $previous = esc_attr( get_pagenum_link( $previous ) );
-
-	    $firstpage = esc_attr( get_pagenum_link( 1 ) );
-	    if ( $firstpage && (1 != $page) )
-		    $echo .= '<li class="previous"><a href="' . $firstpage . '">' . __( 'First', 'text-domain' ) . '</a></li>';
-	    if ( $previous && (1 != $page) )
-		    $echo .= '<li><a href="' . $previous . '" title="' . __( 'previous', 'text-domain' ) . '"><</a></li>';
-
-	    if ( !empty( $min ) && !empty( $max ) ) {
-		    for ( $i = $min; $i <= $max; $i++ ) {
-			    if ( $page == $i ) {
-				    $echo .= '<li class="active"><span class="active">' . str_pad( ( int ) $i, 2, '0', STR_PAD_LEFT ) . '</span></li>';
-			    } else {
-				    $echo .= sprintf( '<li><a href="%s">%002d</a></li>', esc_attr( get_pagenum_link( $i ) ), $i );
-			    }
-		    }
-	    }
-
-	    $next = intval( $page ) + 1;
-	    $next = esc_attr( get_pagenum_link( $next ) );
-	    if ( $next && ($count != $page) )
-		    $echo .= '<li><a href="' . $next . '" title="' . __( 'next', 'text-domain' ) . '">></a></li>';
-
-	    $lastpage = esc_attr( get_pagenum_link( $count ) );
-	    if ( $lastpage ) {
-		    $echo .= '<li class="next"><a href="' . $lastpage . '">' . __( 'Last', 'text-domain' ) . '</a></li>';
-	    }
-	    if ( isset( $echo ) )
-		    echo $args[ 'before_output' ] . $echo . $args[ 'after_output' ];
-    }
-    
+function bootstrap3_comment_button() {
+	echo '<button class="btn btn-default" type="submit">' . __( 'Submit' ) . '</button>';
+}
